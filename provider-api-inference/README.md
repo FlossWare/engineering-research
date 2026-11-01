@@ -149,6 +149,43 @@ Preserve native provider payloads alongside normalized events. Normalization mus
 - Record the account tier and billing mode used for each result.
 - Treat free-tier terms and model catalogues as time-sensitive observations.
 
+## Initial inference smoke-test observations
+
+Observed on 2026-11-01 using the experimental harness in `FlossWare/evaluation`. These are request-level observations for the configured account and exact model IDs, not general provider guarantees.
+
+### OpenRouter: NVIDIA Nemotron 3.5 Lightning Free
+
+| Field | Observation |
+|---|---|
+| Requested model | `nvidia/nemotron-3.5-lightning:free` |
+| Returned model | `nvidia/nemotron-3.5-lightning:free` |
+| Access classification | `catalogue-zero-price` |
+| HTTP status | 200 |
+| Latency | 3.75 s |
+| Finish reason | `stop` |
+| Prompt tokens | 36 |
+| Completion tokens | 382 |
+| Reasoning tokens | 369 |
+| Total tokens | 418 |
+| Visible response | `FLOSSWARE_PROVIDER_SMOKE_OK` (27 characters) |
+| Semantic match | true |
+| Response completeness | `complete` |
+| Reported cost | 0 |
+| Retry performed | false |
+
+The request succeeded with `max-output-tokens=512`. An earlier request with a 32-token completion budget returned HTTP 200 but no visible response and a `length` finish reason, with all reported completion tokens consumed by reasoning. The harness default was subsequently raised to 128; the 128-token attempt also did not complete. The 512-token request is therefore the **first observed successful budget**, not a proven minimum.
+
+The successful request reported 369 reasoning tokens out of 382 completion tokens, leaving 13 tokens for visible output. This supports classifying the earlier empty responses as incomplete reasoning/output rather than semantic mismatches or provider-access failures. It does not establish a universal token requirement; reasoning consumption can vary by prompt, model revision, and provider behavior.
+
+The provider-reported zero cost applies only to this observed request. A catalogue `:free` label and a zero cost field are not guarantees of future availability, account eligibility, or billing treatment.
+
+### Evidence limitations
+
+- One successful semantic smoke test is not a capability-suite result.
+- Streaming, tool calls, structured output, context limits, and error behavior remain untested for this model.
+- The test establishes successful non-streaming text inference for this exact model ID, account configuration, endpoint, prompt, and observed date only.
+- Provider request ID is retained in the local JSONL evidence file; credentials and credential values are not included in the research record.
+
 ## Initial conclusion
 
-The authenticated catalogue baseline is established. The next action is to normalize the actual model IDs and metadata, select models that are demonstrably free or within an explicitly accepted trial allowance, and run one minimal inference probe per provider. DeepInfra, DeepSeek, and OpenAI remain useful paid comparison candidates but should not be mislabeled as free APIs.
+The authenticated catalogue baseline is established, and the first successful inference smoke-test observation is now recorded for OpenRouter's NVIDIA Nemotron 3.5 Lightning Free. Continue with one representative inference probe per eligible provider, then proceed to the representative capability suite. DeepInfra, DeepSeek, and OpenAI remain useful paid comparison candidates but should not be mislabeled as free APIs.
