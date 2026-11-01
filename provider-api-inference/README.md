@@ -11,7 +11,7 @@ Which external inference APIs provide useful, reliable model capabilities for Fl
 ## Boundaries
 
 - This is cross-project research, not a production implementation.
-- `FlossWare/evaluation` evaluates outcomes and evidence; it is not the provider transport test harness.
+- `FlossWare/evaluation` contains the experimental catalogue-inventory and inference smoke-test utilities for this investigation. These scripts are research tooling, not part of the published evaluation package or a production provider transport layer.
 - `FlossWare/model-gateway` owns provider-neutral invocation, credentials, resources, usage/cost, and provenance.
 - `FlossWare/ensemble` may later consume verified provider/model capability profiles; it must not own provider-specific discovery or evaluation.
 - EnMaaS is retained as a separate enterprise-provider baseline.
